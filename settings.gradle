@@ -1,0 +1,42 @@
+pluginManagement {
+    repositories {
+        gradlePluginPortal()
+        google()
+        mavenCentral()
+    }
+}
+dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    repositories {
+        google()
+        mavenCentral()
+        google()
+        mavenCentral()
+        maven { url "https://plugins.gradle.org/m2/" }
+        maven { url 'https://repo1.maven.org/maven2/' }
+        maven { url 'https://maven.google.com' }
+        maven { url 'https://jitpack.io' }
+        maven { url 'https://maven.aliyun.com/repository/public/' }
+        maven { url 'https://maven.aliyun.com/repository/google/' }
+        maven { url 'https://maven.aliyun.com/repository/jcenter' }
+    }
+}
+rootProject.name = "ShoubaSdkDemo"
+include ':app'
+
+if (USE_BLE_TYPE as int == 0) {
+    include ':qnPluginX'
+    include ':qnScalePluginX'
+} else if (USE_BLE_TYPE as int == 2) {
+    //基础SDK
+    include ':qnPlugin'
+    project(":qnPlugin").projectDir = new File(rootProject.projectDir, '../BleSdkPro/qnPlugin')
+    include ':bleCenter'
+    project(":bleCenter").projectDir = new File(rootProject.projectDir, '../BleLibPro/bleCenter')
+
+    //家用秤
+    include ':qnScalePlugin'
+    project(":qnScalePlugin").projectDir = new File(rootProject.projectDir, '../BleSdkPro/qnScalePlugin')
+    include ':normalScale'
+    project(":normalScale").projectDir = new File(rootProject.projectDir, '../BleLibPro/normalScale')
+}
