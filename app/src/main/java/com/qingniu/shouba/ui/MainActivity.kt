@@ -10,6 +10,7 @@ import com.qingniu.shouba.util.ConnectState
 import com.qingniu.qnbleotaplugin.ui.MainViewModel
 import com.qingniu.qnbleotaplugin.ui.ShowFindView
 import com.qingniu.qnbleotaplugin.ui.ShowConnectView
+import com.qingniu.qnbleotaplugin.ui.ShowUnitSelectView
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -20,6 +21,7 @@ class MainActivity : ComponentActivity() {
             if (hasPermission.value){
                 val connectState = MainViewModel.curConnectState.collectAsState()
                 if (connectState.value == ConnectState.none){
+                    ShowUnitSelectView()
                     ShowFindView()
                 }else{
                     ShowConnectView()

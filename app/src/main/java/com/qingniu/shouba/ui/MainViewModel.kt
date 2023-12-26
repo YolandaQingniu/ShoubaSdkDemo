@@ -1,6 +1,7 @@
 package com.qingniu.qnbleotaplugin.ui
 
 import androidx.lifecycle.ViewModel
+import com.qingniu.qnplugin.model.QNWeightUnit
 import com.qingniu.shouba.util.ConnectState
 import com.qingniu.qnscaleplugin.QNScaleData
 import com.qingniu.qnscaleplugin.QNScaleDevice
@@ -16,6 +17,11 @@ object MainViewModel : ViewModel() {
     val hasScanAndConnectPermission: MutableStateFlow<Boolean> = MutableStateFlow(false)
 
     val isScanning: MutableStateFlow<Boolean> = MutableStateFlow(false)
+
+    /**
+     * 当前重量单位
+     */
+    val curWeightUnit:MutableStateFlow<QNWeightUnit> = MutableStateFlow(QNWeightUnit.UNIT_KG)
 
     /**
      * 已发现的设备
@@ -42,9 +48,20 @@ object MainViewModel : ViewModel() {
      */
     val curData: MutableStateFlow<QNScaleData?> = MutableStateFlow(null)
 
-    fun clear(){
+    /**
+     * 当前收到的存储数据（展示用，只记录最新一条）
+     */
+    val curStorageDataList: MutableStateFlow<List<QNScaleData>> =  MutableStateFlow(mutableListOf())
+
+    fun beforeScan(){
+        mFindDevices.value = mutableListOf()
+        targetDevice.value = null
+    }
+
+    fun clear() {
         curConnectState.value = ConnectState.none
         curWeight.value = null
         curData.value = null
+        curStorageDataList.value = mutableListOf()
     }
 }

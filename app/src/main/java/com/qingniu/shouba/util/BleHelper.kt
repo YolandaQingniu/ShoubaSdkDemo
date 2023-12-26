@@ -1,10 +1,12 @@
 package com.qingniu.shouba.util
 
 import android.annotation.SuppressLint
+import android.util.Log
 import com.qingniu.shouba.BaseApplication
 import com.qingniu.qnbleotaplugin.ui.MainViewModel
 import com.qingniu.qnplugin.QNPlugin
 import com.qingniu.qnplugin.inter.QNScanListener
+import com.qingniu.qnplugin.model.QNWeightUnit
 import com.qingniu.qnscaleplugin.QNScaleData
 import com.qingniu.qnscaleplugin.QNScaleDevice
 import com.qingniu.qnscaleplugin.QNScalePlugin
@@ -63,13 +65,14 @@ object BleHelper {
 
         override fun onReceiveMeasureResult(scaleData: QNScaleData, device: QNScaleDevice) {
             MainViewModel.curData.value = scaleData
+            QNScalePlugin.cancelConnectDevice(device)
         }
 
         override fun onReceiveStoredData(
             storedDataList: MutableList<QNScaleData>,
             device: QNScaleDevice
         ) {
-
+            MainViewModel.curStorageDataList.value = storedDataList.toMutableList()
         }
     }
 
@@ -94,6 +97,9 @@ object BleHelper {
 
     fun initQNPlugin(){
         QNPlugin.getInstance(context).setScanListener(mScanListener)
+        QNPlugin.getInstance(context).setLogListener {
+            Log.e("SDK日志", it)
+        }
     }
 
     fun initQNScalePlugin(){
@@ -101,5 +107,15 @@ object BleHelper {
         QNScalePlugin.setDeviceListener(mDeviceListener)
         QNScalePlugin.setStatusListener(mStatusListener)
         QNScalePlugin.setDataListener(mDataListener)
+    }
+
+    fun getWeightShouStr(weightKg: String):String {
+        return when(MainViewModel.curWeightUnit.value){
+            QNWeightUnit.UNIT_KG -> "$weightKg KG"
+            QNWeightUnit.UNIT_LB -> "${QNScalePlugin.getWeightLb(weightKg)} LB"
+            QNWeightUnit.UNIT_JIN -> "${QNScalePlugin.getWeightJin(weightKg)} 斤"
+            QNWeightUnit.UNIT_ST_LB -> "${QNScalePlugin.getWeightStLb(weightKg)[0]} ST ${QNScalePlugin.getWeightStLb(weightKg)[1]} LB"
+            QNWeightUnit.UNIT_ST -> "${QNScalePlugin.getWeightSt(weightKg)} ST"
+        }
     }
 }

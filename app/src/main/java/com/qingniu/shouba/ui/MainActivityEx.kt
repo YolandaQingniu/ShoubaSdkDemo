@@ -28,6 +28,8 @@ import com.qingniu.qnplugin.QNPlugin
 import com.qingniu.qnplugin.model.QNWeightUnit
 import com.qingniu.qnscaleplugin.QNScaleOperate
 import com.qingniu.qnscaleplugin.QNScalePlugin
+import com.qingniu.shouba.ui.UnitSelectActivity
+import com.qingniu.shouba.util.BleHelper
 
 /**
  *@author: hyr
@@ -36,10 +38,33 @@ import com.qingniu.qnscaleplugin.QNScalePlugin
  */
 
 @Composable
-fun ShowFindView() {
+fun ShowUnitSelectView() {
     Box(
         Modifier
             .padding(top = 20.dp)
+            .fillMaxWidth()
+            .height(40.dp)
+        //.background(Color.Red)
+    ) {
+        val context = LocalContext.current
+        Text(
+            text = "点击设置单位",
+            Modifier
+                .fillMaxWidth()
+                .align(Alignment.Center)
+                .clickable(onClick = {
+                    context.startActivity(UnitSelectActivity.getCallIntent(context))
+                }, indication = null, interactionSource = remember { MutableInteractionSource() }),
+            textAlign = TextAlign.Center, fontSize = 22.sp
+        )
+    }
+}
+
+@Composable
+fun ShowFindView() {
+    Box(
+        Modifier
+            .padding(top = 80.dp)
             .fillMaxWidth()
             .height(40.dp)
             //.background(Color.Red)
@@ -58,7 +83,10 @@ fun ShowFindView() {
                             .getInstance(context)
                             .stopScan()
                     } else {
-                        QNPlugin.getInstance(context).startScan()
+                        MainViewModel.beforeScan()
+                        QNPlugin
+                            .getInstance(context)
+                            .startScan()
                     }
                 }, indication = null, interactionSource = remember { MutableInteractionSource() }),
             textAlign = TextAlign.Center, fontSize = 22.sp
@@ -184,6 +212,7 @@ fun ShowConnectView() {
     val connectState = MainViewModel.curConnectState.collectAsState()
     val curWeight = MainViewModel.curWeight.collectAsState()
     val curData = MainViewModel.curData.collectAsState()
+    val curStorageList = MainViewModel.curStorageDataList.collectAsState()
     connectState.value.let {
 
         val tip =if (it == ConnectState.connecting) {
@@ -199,21 +228,38 @@ fun ShowConnectView() {
                 .padding(top = 80.dp)
                 .fillMaxWidth()
         ) {
-            Column {
-                Text(text = tip,
-                    Modifier
-                        .fillMaxWidth()
-                        .align(Alignment.CenterHorizontally), textAlign = TextAlign.Center, fontSize = 22.sp)
-                if (curData.value != null){
-                    Text(text = "体重 ${curData.value!!.weight}\n50Hz阻抗 ${curData.value!!.resistance50}\n500Hz阻抗 ${curData.value!!.resistance500}",
-                        Modifier
-                            .fillMaxWidth()
-                            .align(Alignment.CenterHorizontally), textAlign = TextAlign.Center, fontSize = 22.sp)
-                }else if (curWeight.value != null){
-                    Text(text = "不稳定体重 ${curWeight.value}",
-                        Modifier
-                            .fillMaxWidth()
-                            .align(Alignment.CenterHorizontally), textAlign = TextAlign.Center, fontSize = 22.sp)
+            LazyColumn{
+                item {
+                    Column {
+                        Text(text = tip,
+                            Modifier
+                                .fillMaxWidth()
+                                .align(Alignment.CenterHorizontally), textAlign = TextAlign.Center, fontSize = 22.sp)
+                        if (curData.value != null){
+                            Text(text = "体重 ${BleHelper.getWeightShouStr(curData.value!!.weight)}\n50Hz阻抗 ${curData.value!!.resistance50}\n500Hz阻抗 ${curData.value!!.resistance500}",
+                                Modifier
+                                    .fillMaxWidth()
+                                    .align(Alignment.CenterHorizontally), textAlign = TextAlign.Center, fontSize = 22.sp)
+                        }else if (curWeight.value != null){
+                            Text(text = "不稳定体重 ${BleHelper.getWeightShouStr(curWeight.value!!)}",
+                                Modifier
+                                    .fillMaxWidth()
+                                    .align(Alignment.CenterHorizontally), textAlign = TextAlign.Center, fontSize = 22.sp)
+                        }
+                        if (curStorageList.value.isNotEmpty()){
+                            Text(text = "----以下为存储数据----",
+                                Modifier
+                                    .fillMaxWidth()
+                                    .align(Alignment.CenterHorizontally), textAlign = TextAlign.Center, fontSize = 22.sp)
+                            curStorageList.value.forEach { storageData->
+                                Text(text = "体重 ${BleHelper.getWeightShouStr(storageData.weight)}\n50Hz阻抗 ${storageData.resistance50}\n500Hz阻抗 ${storageData.resistance500}",
+                                    Modifier
+                                        .padding(bottom = 10.dp)
+                                        .fillMaxWidth()
+                                        .align(Alignment.CenterHorizontally), textAlign = TextAlign.Center, fontSize = 22.sp)
+                            }
+                        }
+                    }
                 }
             }
         }
