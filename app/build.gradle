@@ -22,7 +22,7 @@ android {
 
     signingConfigs {
         myConfig {
-            storeFile file("qnsdk_demo.jks")
+            storeFile file("../buildsystem/qnsdk_demo.jks")
             storePassword "123456"
             keyAlias "qntest_demo"
             keyPassword "123456"
