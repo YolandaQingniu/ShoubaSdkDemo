@@ -1,6 +1,6 @@
-### Permissions we need
+### 所需权限
 
-#### On Android 12 or higher we need
+#### 如果您的app的targetSdk>30，且手机的系统版本为安卓12及以上
 
 > android.permission.BLUETOOTH_ADVERTISE
 >
@@ -8,7 +8,7 @@
 >
 > android.permission.BLUETOOTH_CONNECT
 
-#### Below android12 we need
+#### 否则需要
 
 > android.permission.BLUETOOTH
 >
@@ -18,17 +18,33 @@
 >
 > android.permission.ACCESS_FINE_LOCATION
 
-### Google's official documentation:
+### Google官方适配文档:
 
 https://developer.android.com/guide/topics/connectivity/bluetooth/permissions
 
-### ProGuard
+### 混淆
 
 ```
--keep class com.qingniu.** {*;}
-
 -keep classmembers enum * {
     public static **[] values();
     public static ** valueOf(java.lang.String);
 }
 ```
+
+### 引用
+
+```groovy
+allprojects {
+    repositories {
+        maven { url 'https://jitpack.io' }
+    }
+}
+```
+
+Core Plugin:
+
+> implementation "com.github.YolandaQingniu.ShoubaSdkDemo:QNPluginX:1.0.0"
+
+Scale Plugin:
+
+> implementation "com.github.YolandaQingniu.ShoubaSdkDemo:QNScalePluginX:1.0.0"
