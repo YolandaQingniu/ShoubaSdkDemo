@@ -79,14 +79,10 @@ fun ShowFindView() {
                 .align(Alignment.Center)
                 .clickable(onClick = {
                     if (isScanning.value) {
-                        QNPlugin
-                            .getInstance(context)
-                            .stopScan()
+                        BleHelper.stopScan()
                     } else {
                         MainViewModel.beforeScan()
-                        QNPlugin
-                            .getInstance(context)
-                            .startScan()
+                        BleHelper.startScan()
                     }
                 }, indication = null, interactionSource = remember { MutableInteractionSource() }),
             textAlign = TextAlign.Center, fontSize = 22.sp
@@ -109,12 +105,10 @@ fun ShowFindView() {
                     .align(Alignment.Center)
                     .clickable(
                         onClick = {
-                            QNPlugin
-                                .getInstance(context)
-                                .stopScan()
+                            BleHelper.stopScan()
                             targetDevice.value?.let {
                                 QNScalePlugin.connectDevice(it, QNScaleOperate().apply {
-                                    unit = QNWeightUnit.UNIT_KG
+                                    unit = MainViewModel.curWeightUnit.value
                                 })
                             }
                         },

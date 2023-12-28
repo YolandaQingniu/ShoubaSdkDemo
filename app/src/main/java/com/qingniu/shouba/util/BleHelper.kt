@@ -2,6 +2,7 @@ package com.qingniu.shouba.util
 
 import android.annotation.SuppressLint
 import android.util.Log
+import android.widget.Toast
 import com.qingniu.shouba.BaseApplication
 import com.qingniu.qnbleotaplugin.ui.MainViewModel
 import com.qingniu.qnplugin.QNPlugin
@@ -88,7 +89,10 @@ object BleHelper {
 
     @SuppressLint("MissingPermission")
     fun startScan() {
-        QNPlugin.getInstance(context).startScan()
+        val result = QNPlugin.getInstance(context).startScan()
+        if (result != 0) {
+            Toast.makeText(context,"启动扫描失败，请检查定位开关和蓝牙开关",Toast.LENGTH_SHORT).show()
+        }
     }
 
     fun stopScan(){
