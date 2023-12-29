@@ -1,3 +1,6 @@
+### API文档
+https://yolandaqingniu.github.io/ShoubaSDK_doc/zh/
+
 ### 所需权限
 
 #### 如果您的app的targetSdk>30，且手机的系统版本为安卓12及以上
