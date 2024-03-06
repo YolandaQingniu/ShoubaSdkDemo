@@ -46,8 +46,8 @@ allprojects {
 
 Core Plugin:
 
-> implementation "com.github.YolandaQingniu.ShoubaSdkDemo:QNPluginX:1.0.0"
+> implementation "com.github.YolandaQingniu.ShoubaSdkDemo:QNPluginX:1.0.1"
 
 Scale Plugin:
 
-> implementation "com.github.YolandaQingniu.ShoubaSdkDemo:QNScalePluginX:1.0.0"
+> implementation "com.github.YolandaQingniu.ShoubaSdkDemo:QNScalePluginX:1.0.1"
